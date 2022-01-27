@@ -5,4 +5,4 @@ class_names = [
 
 data_path = 'data/Images'
 
-image_size = (100, 100)
+image_size = (40, 40)

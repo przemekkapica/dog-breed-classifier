@@ -2,25 +2,28 @@ from sklearn.model_selection import learning_curve
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras import datasets, layers, models
+from const import image_size
 
 class DogBreedClassifier():
     def setup_model(self):
         self.model = models.Sequential()
-        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+        self.model.add(layers.Conv2D(image_size[0], (3, 3), activation='relu', input_shape=(image_size[0], image_size[1], 3)))
         self.model.add(layers.MaxPooling2D((2, 2)))
-        self.model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(layers.Conv2D(2 * image_size[0], (3, 3), activation='relu'))
         self.model.add(layers.MaxPooling2D((2, 2)))
-        self.model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(layers.Conv2D(image_size[0], (3, 3), activation='relu'))
+        self.model.add(layers.MaxPooling2D((2, 2))) 
 
         self.model.add(layers.Flatten())
-        self.model.add(layers.Dense(64, activation='relu'))
-        self.model.add(layers.Dense(10))
+        self.model.add(layers.Dense(2 * image_size[0], activation='relu'))
+        self.model.add(layers.Dense(2 * image_size[0], activation='relu'))
+        self.model.add(layers.Dense(121))
 
 
     def compile_and_train(self, train_images, train_labels, test_images, test_labels):
         self.model.compile(
             optimizer=tf.keras.optimizers.Adam(
-                learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-07, amsgrad=False,
+                learning_rate=0.001, epsilon=1e-07, amsgrad=False,
                 name='Adam'
             ),
             loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -29,7 +32,7 @@ class DogBreedClassifier():
 
         self.history = self.model.fit(
             train_images, train_labels, 
-            epochs=1, 
+            epochs=100, 
             validation_data=(test_images, test_labels)
         )
 
