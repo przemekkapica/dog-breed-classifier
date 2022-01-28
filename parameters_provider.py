@@ -1,6 +1,7 @@
 import argparse
 
-parser = argparse.ArgumentParser(description='Process some integers.')
+parser = argparse.ArgumentParser()
+
 parser.add_argument('-i', '--image-dim', dest='image_dim', default=40, type=int)
 parser.add_argument('-s', '--train-split', dest='train_split', default=0.8, type=float)
 parser.add_argument('-lr', '--learning-rate', dest='learning_rate', default=0.001, type=float)

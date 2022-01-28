@@ -5,6 +5,17 @@ from tensorflow.keras import datasets, layers, models
 from const import image_size
 
 class DogBreedClassifier():
+    '''
+    DogBreedClassifier is a CNN classification model trained to recognize provided dog breeds.
+    Takes following parameters:
+    [image_dim] - (int) dimension of a image feeded to the model (size of a image is [image_dim]x[image_dim])
+    [learning_rate] - (float) determines the step size at each iteration while moving toward a minimum of a loss function
+    [epochs] - (int) number of cycles for training
+    [optimizer] - (str) algorithm or method used to change the attributes of the model
+    [epsilon] - (float) small constant for numerical stability
+    [kernel_size] - (int) dimension of a kernel which is a filter that is used to extract the features from the images
+    [dense_neurons] - (int) number of neurons used in dense layers of a CNN
+    '''
 
     def __init__(self, image_dim, learning_rate, epochs, optimizer, epsilon, kernel_size, dense_neurons):
         super().__init__()
@@ -17,6 +28,13 @@ class DogBreedClassifier():
         self.dense_neurons = dense_neurons
 
     def setup_model(self):
+        '''
+        Initializes CNN model with provided parameters. 
+        Firstly creates a convolutional base with 3 patterns: Conv2D followed by MaxPooling2D layers.
+        Then it flattens the output of the last MaxPooling2D layer and feeds it to dense layer (converts 3D to 1D). 
+        Dense layers are responsible for actual class recognition. The last dense layer has 121 neurons because 
+        there are 121 classes of dog breeds in our dataset.
+        '''
         self.model = models.Sequential()
         self.model.add(layers.Conv2D(self.image_dim, self.kernel_size, activation='relu', input_shape=(self.image_dim, self.image_dim, 3)))
         self.model.add(layers.MaxPooling2D((2, 2)))
@@ -32,6 +50,15 @@ class DogBreedClassifier():
 
 
     def compile_and_train(self, train_images, train_labels, test_images, test_labels):
+        '''
+        This method compiles and trains the CNN model with provided parameters.
+        [train_images] - (np.array) array with train images pixeled data. Shape - (img_count, img_dim, img_dim, 3)
+        [train_labels] - (np.array) array with train labels (classes: 0-120). Shape - (label_count, )
+        [test_images] - (np.array) array with test images pixeled data. Shape - (img_count, img_dim, img_dim, 3)
+        [test_labels] - (np.array) array with test labels (classes: 0-120). Shape - (label_count, )
+
+        Other parameters are described in DogBreedClassifier docs.
+        '''
         self.model.compile(
             optimizer=tf.keras.optimizers.Adam(
                 learning_rate=self.learning_rate, epsilon=self.epsilon, amsgrad=False,
@@ -48,9 +75,23 @@ class DogBreedClassifier():
         )
 
     def print_model_summary(self):
+        '''
+        Prints a useful summary of the model, which includes: Nnme and type of all layers in the model.
+        Also outputs shape for each layer.
+        '''
         self.model.summary()
 
     def evaluate_model(self, test_images, test_labels):
+        '''
+        This method tests how the classifier handles recognizing data it hasn't seen before.
+        It takes [test_images] and [test_labels] parameters.
+        [test_images] - (np.array) array with test images pixeled data. Shape - (img_count, img_dim, img_dim, 3)
+        [test_labels] - (np.array) array with test labels (classes: 0-120). Shape - (label_count, )
+
+        Uses matplotlib.pyplot for plotting accuracy and validation accuracy.
+
+        Returns obtained loss and accuracy for provided data.
+        '''
         plt.plot(self.history.history['accuracy'], label='accuracy')
         plt.plot(self.history.history['val_accuracy'], label = 'val_accuracy')
         plt.xlabel('Epoch')
