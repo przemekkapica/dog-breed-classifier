@@ -1,11 +1,10 @@
 import os
 import matplotlib.pyplot as plt
 from tensorflow.keras import datasets
-from const import class_names
 import cv2
 import numpy as np
 import random
-from const import data_path, image_size
+from const import data_path
 
 
 class DataProvider:

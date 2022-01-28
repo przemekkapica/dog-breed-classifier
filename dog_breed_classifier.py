@@ -2,7 +2,6 @@ from sklearn.model_selection import learning_curve
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras import datasets, layers, models
-from const import image_size
 
 class DogBreedClassifier():
     '''
@@ -44,7 +43,7 @@ class DogBreedClassifier():
         self.model.add(layers.MaxPooling2D((2, 2))) 
 
         self.model.add(layers.Flatten())
-        self.model.add(layers.Dense(self.dense_neurons, activation='relu'))
+        self.model.add(layers.Dense(2 * self.dense_neurons, activation='relu'))
         self.model.add(layers.Dense(self.dense_neurons, activation='relu'))
         self.model.add(layers.Dense(121))
 
