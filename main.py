@@ -3,7 +3,7 @@ from data_provider import DataProvider
 from parameters_provider import args
 
 if __name__ == '__main__':
-    data_provider = DataProvider(args.image_dim)
+    data_provider = DataProvider(args.image_dim, args.train_split)
 
     (train_images, train_labels), (test_images, test_labels) = data_provider.get_normalized_data(verbose=True)
 

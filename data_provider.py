@@ -9,10 +9,11 @@ from const import data_path, image_size
 
 class DataProvider:
 
-    def __init__(self, image_dim):
+    def __init__(self, image_dim, train_split):
         super().__init__()
         self.image_dim = image_dim
         self.image_size = (image_dim, image_dim)
+        self.train_split = train_split
 
     def get_cifar_data(self, verbose=False):
         (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
@@ -62,7 +63,7 @@ class DataProvider:
         
         print('Got data!')
         
-        train_size = int(0.8 * len(data))
+        train_size = int(self.train_split * len(data))
         test_size = len(data) - train_size
 
         train_data = data[:train_size]
@@ -93,7 +94,7 @@ class DataProvider:
             print('test labels shape: ', test_labels.shape)
             print(np.unique(train_labels))
         # normalize images
-        # train_images, test_images = train_images / 255.0, test_images / 255.0
+        train_images, test_images = train_images / 255.0, test_images / 255.0
 
         return (train_images, train_labels), (test_images, test_labels)
 
