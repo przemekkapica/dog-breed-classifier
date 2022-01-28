@@ -8,6 +8,12 @@ import random
 from const import data_path, image_size
 
 class DataProvider:
+
+    def __init__(self, image_dim):
+        super().__init__()
+        self.image_dim = image_dim
+        self.image_size = (image_dim, image_dim)
+
     def get_cifar_data(self, verbose=False):
         (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
         # Normalize pixel values to be between 0 and 1
@@ -48,7 +54,7 @@ class DataProvider:
             if os.path.isdir(f'{data_path}/{class_name}'):
                 for image in os.listdir(f'{data_path}/{class_name}'):
                     image_array = cv2.imread(f'{data_path}/{class_name}/{image}')
-                    image_array = cv2.resize(image_array, image_size)
+                    image_array = cv2.resize(image_array, self.image_size)
                     data.append((image_array, i))
             i += 1
 
@@ -81,8 +87,6 @@ class DataProvider:
         test_labels = np.array(test_labels)
 
         if verbose:
-            # we need to convert this shit to numpy arrays
-            # and have the same shape as in cifar data
             print('train images shape: ', train_images.shape)
             print('train labels shape: ', train_labels.shape)
             print('test images shape: ', test_images.shape)
@@ -93,6 +97,7 @@ class DataProvider:
 
         return (train_images, train_labels), (test_images, test_labels)
 
-# data_provider = DataProvider()
-#data_provider.get_cifar_data(verbose=True)
-# data_provider.get_normalized_data(verbose=True)
+if __name__ == '__main__':
+    data_provider = DataProvider()
+    # data_provider.get_cifar_data(verbose=True)
+    data_provider.get_normalized_data(verbose=True)

@@ -5,26 +5,37 @@ from tensorflow.keras import datasets, layers, models
 from const import image_size
 
 class DogBreedClassifier():
+
+    def __init__(self, image_dim, learning_rate, epochs, optimizer, epsilon, kernel_size, dense_neurons):
+        super().__init__()
+        self.image_dim = image_dim
+        self.learning_rate = learning_rate
+        self.epochs = epochs
+        self.optimizer = optimizer
+        self.epsilon = epsilon
+        self.kernel_size = (kernel_size, kernel_size)
+        self.dense_neurons = dense_neurons
+
     def setup_model(self):
         self.model = models.Sequential()
-        self.model.add(layers.Conv2D(image_size[0], (3, 3), activation='relu', input_shape=(image_size[0], image_size[1], 3)))
+        self.model.add(layers.Conv2D(self.image_dim, self.kernel_size, activation='relu', input_shape=(self.image_dim, self.image_dim, 3)))
         self.model.add(layers.MaxPooling2D((2, 2)))
-        self.model.add(layers.Conv2D(2 * image_size[0], (3, 3), activation='relu'))
+        self.model.add(layers.Conv2D(2 * self.image_dim, self.kernel_size, activation='relu'))
         self.model.add(layers.MaxPooling2D((2, 2)))
-        self.model.add(layers.Conv2D(image_size[0], (3, 3), activation='relu'))
+        self.model.add(layers.Conv2D(self.image_dim, self.kernel_size, activation='relu'))
         self.model.add(layers.MaxPooling2D((2, 2))) 
 
         self.model.add(layers.Flatten())
-        self.model.add(layers.Dense(2 * image_size[0], activation='relu'))
-        self.model.add(layers.Dense(2 * image_size[0], activation='relu'))
+        self.model.add(layers.Dense(self.dense_neurons, activation='relu'))
+        self.model.add(layers.Dense(self.dense_neurons, activation='relu'))
         self.model.add(layers.Dense(121))
 
 
     def compile_and_train(self, train_images, train_labels, test_images, test_labels):
         self.model.compile(
             optimizer=tf.keras.optimizers.Adam(
-                learning_rate=0.001, epsilon=1e-07, amsgrad=False,
-                name='Adam'
+                learning_rate=self.learning_rate, epsilon=self.epsilon, amsgrad=False,
+                name=self.optimizer
             ),
             loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
             metrics=['accuracy']
@@ -32,7 +43,7 @@ class DogBreedClassifier():
 
         self.history = self.model.fit(
             train_images, train_labels, 
-            epochs=100, 
+            epochs=self.epochs, 
             validation_data=(test_images, test_labels)
         )
 
